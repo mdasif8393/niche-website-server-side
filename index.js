@@ -98,7 +98,7 @@ async function run() {
         const filter = {_id: ObjectId(id)};
         const updateDoc = {
           $set: {
-            orderStatus: 'confirm'
+            orderStatus: 'shipped'
           },
         }
         const result = await ordersCollection.updateOne(filter, updateDoc)
@@ -130,7 +130,21 @@ async function run() {
         const email = req.params.email;
         const query = {email: email};
         const result = await usersCollection.findOne(query);
-        res.json(result)
+        if(result?.role === 'admin'){
+          res.json(1)
+        }
+        else{
+          res.json(0)
+        }
+      })
+
+      //delete a bike by admin
+      app.delete('/bikes/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = {_id: ObjectId(id)};
+        const result = await bikesCollection.deleteOne(query);
+        res.json(result);
+        console.log(id)
       })
 
     } 
